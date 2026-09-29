@@ -1,0 +1,195 @@
+const transType = document.getElementById("transaction-type");
+const title = document.getElementById("title");
+const description = document.getElementById("description");
+const amount = document.getElementById("amount");
+const category = document.getElementById("category");
+const transDate = document
+    .getElementById("transaction-date");
+const addTransBtn = document.getElementById("add-transaction-btn");
+const transForm = document.getElementById("transaction-form");
+const transList = document.getElementById("transaction-list");
+const searchTrans = document.getElementById("search-transaction");
+const filterType = document.getElementById("filter-type");
+const filterCategory = document.getElementById("filter-category");
+const filterDate = document.getElementById("filter-date");
+
+
+let transData = JSON.parse(localStorage.getItem("transData")) || [];
+addToTrans(transData);
+
+let mode = "add";
+let editingId = null;
+
+
+function addTrans() {
+
+    if (mode === "edit") {
+
+        const idForEditing = transData.find(({ id }) => id === editingId);
+
+        idForEditing.transtype = transType.value;
+        idForEditing.title = title.value;
+        idForEditing.description = description.value;
+        idForEditing.amount = amount.value;
+        idForEditing.category = category.value;
+        idForEditing.transdate = transDate.value;
+
+        localStorage.setItem("transData", JSON.stringify(transData));
+
+        mode = "add";
+        editingId = null;
+        addTransBtn.textContent = "Add Transaction";
+
+        transType.value = "";
+        title.value = "";
+        description.value = "";
+        amount.value = "";
+        category.value = "";
+        transDate.value = "";
+
+
+
+    } else {
+
+        transData.unshift({
+            id: crypto.randomUUID(),
+            transtype: transType.value,
+            title: title.value,
+            description: description.value,
+            amount: amount.value,
+            category: category.value,
+            transdate: transDate.value,
+        })
+
+        localStorage.setItem("transData", JSON.stringify(transData));
+        addToTrans(transData);
+
+        transType.value = "";
+        title.value = "";
+        description.value = "";
+        amount.value = "";
+        category.value = "";
+        transDate.value = "";
+
+    }
+
+
+}
+
+function addToTrans(dataToAdd) {
+
+    transList.innerHTML = "";
+
+    dataToAdd.forEach((data) => {
+
+        const type = data.transtype.slice(0, 1).toUpperCase() + data.transtype.slice(1).toLowerCase();
+        const category = data.category.slice(0, 1).toUpperCase() + data.category.slice(1).toLowerCase();
+        const date = new Date(data.transdate);
+        const dateToDisplay = date.toLocaleDateString("en-GB", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric"
+        })
+
+        transList.innerHTML += `
+         <tr class="transaction-row" id="${data.id}" >
+              <td>
+                <div class="transaction-description"> <strong>${data.title}</strong> <span>${data.description}</span>
+                </div>
+              </td>
+              <td> <span class="category-badge">${category}</span> </td>
+              <td> <span class="type-badge ${data.transtype}-badge">${type}</span> </td>
+              <td class="amount ${data.transtype}-amount"> ${data.transtype === "income" ? "+" : "-"}$${data.amount} </td>
+              <td>${dateToDisplay}</td>
+              <td>
+                <div class="action-buttons"> <button type="button" class="btn btn-small btn-edit" data-action="edit">
+                    Edit </button> <button type="button" class="btn btn-small btn-delete" data-action="delete"> Delete
+                  </button> </div>
+              </td>
+        </tr> 
+        `
+    })
+}
+
+function deleteTrans(elToDelete) {
+
+    const parentEl = elToDelete.closest("tr");
+    const idOfParent = parentEl.id;
+
+    transData = transData.filter(({ id }) => id !== idOfParent);
+
+    localStorage.setItem("transData", JSON.stringify(transData));
+    addToTrans(transData);
+
+}
+
+function editTrans(elToEdit) {
+
+    const parentEl = elToEdit.closest("tr");
+    const idOfParent = parentEl.id;
+
+    const idForEditing = transData.find(({ id }) => id === idOfParent);
+
+    console.log(idForEditing);
+
+    transType.value = idForEditing.transtype;
+    title.value = idForEditing.title;
+    description.value = idForEditing.description;
+    amount.value = idForEditing.amount;
+    category.value = idForEditing.category;
+    transDate.value = idForEditing.transdate;
+
+    addTransBtn.textContent = "Update Transaction";
+    mode = "edit";
+    editingId = idOfParent;
+
+}
+
+function searchAndSort() {
+
+    const valueOfSearchTrans = searchTrans.value;
+    const valueOfFilterType = filterType.value;
+    const valueOfFilterCategory = filterCategory.value;
+    const valueOfFilterDate = filterDate.value;
+
+
+    const filteredArray =  transData.filter((data) => data.title.toLowerCase().includes(valueOfSearchTrans.toLowerCase()) || data.description.toLowerCase().includes(valueOfSearchTrans.toLowerCase()));
+
+    console.log(filteredArray)
+
+    const filteredType = valueOfFilterType !== "all" ? filteredArray.filter((data)=> data.transtype === valueOfFilterType) : filteredArray;
+
+    console.log(filteredType)
+    const filteredCategory = valueOfFilterCategory !== "all" ? filteredType.filter((data)=> data.category === valueOfFilterCategory) : filteredType ;
+
+    const filteredDate = valueOfFilterDate !== "all" ? filteredCategory.filter((data)=> data.transdate.slice(0,7) === valueOfFilterDate) : filteredCategory ;
+
+
+    addToTrans(filteredDate);
+
+}
+
+
+addTransBtn.addEventListener("click", (event) => {
+    event.preventDefault();
+    addTrans();
+    addToTrans(transData);
+});
+
+transList.addEventListener("click", (event) => {
+    if (event.target.classList.contains("btn-delete")) {
+        deleteTrans(event.target);
+    }
+})
+
+transList.addEventListener("click", (event) => {
+    if (event.target.classList.contains("btn-edit")) {
+        editTrans(event.target);
+    }
+})
+
+
+searchTrans.addEventListener("input",searchAndSort);
+filterType.addEventListener("change",searchAndSort);
+filterCategory.addEventListener("change",searchAndSort);
+filterDate.addEventListener("change",searchAndSort);

@@ -9,11 +9,15 @@
 </head>
 
 <body>
-  
+
   <header class="header">
-    <div class="container header-content"> <a href="#" class="logo">MoneyTrack</a>
-      <nav class="navigation"> <a href="#dashboard">Dashboard</a> <a href="#transactions">Transactions</a> <a
-          href="#overview">Overview</a> </nav>
+    <div class="container header-content">
+      <a href="#" class="logo">MoneyTrack</a>
+      <nav class="navigation">
+        <a href="#dashboard">Dashboard</a>
+        <a href="#transactions">Transactions</a>
+        <a href="#overview">Overview</a>
+      </nav>
     </div>
   </header>
   <main class="container" id="dashboard"> <!-- Page Heading -->
@@ -58,16 +62,36 @@
             <h2>Add Transaction</h2>
           </div>
         </div>
-        <form id="transaction-form" class="transaction-form"> <!-- Transaction Type -->
+        <form id="transaction-form" class="transaction-form">
+
+          <!-- Transaction Type -->
+
           <div class="form-group"> <label for="transaction-type"> Transaction Type </label> <select
               id="transaction-type" name="transactionType">
+              <option value="">Select Type</option>
               <option value="income">Income</option>
               <option value="expense">Expense</option>
-            </select> </div> <!-- Description -->
+            </select> </div>
+
+          <!-- Title -->
+
+          <div class="form-group">
+            <label for="title"> Title </label>
+            <input type="text" id="title" name="title" placeholder="e.g. Grocery shopping">
+          </div>
+
+          <!-- Description -->
+
           <div class="form-group"> <label for="description"> Description </label> <input type="text" id="description"
-              name="description" placeholder="e.g. Grocery shopping"> </div> <!-- Amount -->
+              name="description" placeholder="e.g. Weekly groceries for the family"> </div>
+
+          <!-- Amount -->
+
           <div class="form-group"> <label for="amount"> Amount </label> <input type="number" id="amount" name="amount"
-              placeholder="e.g. 500" min="0" step="0.01"> </div> <!-- Category -->
+              placeholder="e.g. 500" min="0" step="0.01" > </div>
+
+          <!-- Category -->
+
           <div class="form-group"> <label for="category"> Category </label> <select id="category" name="category">
               <option value="">Select category</option>
               <option value="food">Food</option>
@@ -76,12 +100,21 @@
               <option value="bills">Bills</option>
               <option value="salary">Salary</option>
               <option value="other">Other</option>
-            </select> </div> <!-- Date -->
+            </select> </div>
+
+          <!-- Date -->
+
           <div class="form-group"> <label for="transaction-date"> Date </label> <input type="date" id="transaction-date"
-              name="transactionDate"> </div> <!-- Submit --> <button type="submit" class="btn btn-primary"
-            id="add-transaction-btn"> Add Transaction </button>
+              name="transactionDate" > </div>
+
+          <!-- Submit -->
+
+          <button type="submit" class="btn btn-primary" id="add-transaction-btn"> Add Transaction </button>
         </form>
-      </section> <!-- Monthly Overview -->
+      </section>
+
+      <!-- Monthly Overview -->
+
       <section class="card overview-section" id="overview">
         <div class="section-header">
           <div>
@@ -92,7 +125,10 @@
             <option>August</option>
             <option>July</option>
           </select>
-        </div> <!-- Future Chart Placeholder -->
+        </div>
+
+        <!-- Future Chart Placeholder -->
+
         <div class="chart-placeholder" id="expense-chart" aria-label="Expense chart placeholder">
           <div class="chart-placeholder-content"> <span class="chart-icon">▥</span>
             <h3>Expense Chart</h3>
@@ -100,22 +136,37 @@
           </div>
         </div>
       </section>
-    </div> <!-- Transactions -->
+    </div>
+
+    <!-- Transactions -->
+
     <section class="card transactions-section" id="transactions">
       <div class="section-header transactions-header">
         <div>
           <p class="section-label">Activity</p>
           <h2>Transactions</h2>
         </div> <span class="transaction-count" id="transaction-count"> 5 transactions </span>
-      </div> <!-- Filters -->
-      <div class="filters" id="transaction-filters"> <!-- Search -->
+      </div>
+
+      <!-- Filters -->
+
+      <div class="filters" id="transaction-filters">
+
+        <!-- Search -->
+
         <div class="filter-group search-group"> <label for="search-transaction"> Search </label> <input type="search"
-            id="search-transaction" name="searchTransaction" placeholder="Search transactions..."> </div> <!-- Type -->
+            id="search-transaction" name="searchTransaction" placeholder="Search transactions..."> </div>
+
+        <!-- Type -->
+
         <div class="filter-group"> <label for="filter-type"> Type </label> <select id="filter-type" name="filterType">
             <option value="all"> All Types </option>
             <option value="income"> Income </option>
             <option value="expense"> Expense </option>
-          </select> </div> <!-- Category -->
+          </select> </div>
+
+        <!-- Category -->
+
         <div class="filter-group"> <label for="filter-category"> Category </label> <select id="filter-category"
             name="filterCategory">
             <option value="all"> All Categories </option>
@@ -125,14 +176,20 @@
             <option value="bills"> Bills </option>
             <option value="salary"> Salary </option>
             <option value="other"> Other </option>
-          </select> </div> <!-- Date -->
+          </select> </div>
+
+        <!-- Date -->
+
         <div class="filter-group"> <label for="filter-date"> Date </label> <select id="filter-date" name="filterDate">
             <option value="all"> All Dates </option>
             <option value="2026-09"> September 2026 </option>
             <option value="2026-08"> August 2026 </option>
             <option value="2026-07"> July 2026 </option>
           </select> </div>
-      </div> <!-- Transaction Table -->
+      </div>
+
+      <!-- Transaction Table -->
+
       <div class="table-wrapper">
         <table class="transaction-table">
           <thead>
@@ -145,97 +202,30 @@
               <th>Actions</th>
             </tr>
           </thead>
-          <tbody id="transaction-list"> <!-- Transaction 1 -->
-            <tr class="transaction-row">
-              <td>
-                <div class="transaction-description"> <strong>Grocery Shopping</strong> <span>Weekly groceries</span>
-                </div>
-              </td>
-              <td> <span class="category-badge"> Food </span> </td>
-              <td> <span class="type-badge expense-badge"> Expense </span> </td>
-              <td class="amount expense-amount"> -$120.00 </td>
-              <td> 20 Sep 2026 </td>
-              <td>
-                <div class="action-buttons"> <button type="button" class="btn btn-small btn-edit" data-action="edit">
-                    Edit </button> <button type="button" class="btn btn-small btn-delete" data-action="delete"> Delete
-                  </button> </div>
-              </td>
-            </tr> <!-- Transaction 2 -->
-            <tr class="transaction-row">
-              <td>
-                <div class="transaction-description"> <strong>Freelance Payment</strong> <span>Website project</span>
-                </div>
-              </td>
-              <td> <span class="category-badge"> Salary </span> </td>
-              <td> <span class="type-badge income-badge"> Income </span> </td>
-              <td class="amount income-amount"> +$1,200.00 </td>
-              <td> 18 Sep 2026 </td>
-              <td>
-                <div class="action-buttons"> <button type="button" class="btn btn-small btn-edit" data-action="edit">
-                    Edit </button> <button type="button" class="btn btn-small btn-delete" data-action="delete"> Delete
-                  </button> </div>
-              </td>
-            </tr> <!-- Transaction 3 -->
-            <tr class="transaction-row">
-              <td>
-                <div class="transaction-description"> <strong>Bus Pass</strong> <span>Monthly transportation</span>
-                </div>
-              </td>
-              <td> <span class="category-badge"> Transport </span> </td>
-              <td> <span class="type-badge expense-badge"> Expense </span> </td>
-              <td class="amount expense-amount"> -$45.00 </td>
-              <td> 15 Sep 2026 </td>
-              <td>
-                <div class="action-buttons"> <button type="button" class="btn btn-small btn-edit" data-action="edit">
-                    Edit </button> <button type="button" class="btn btn-small btn-delete" data-action="delete"> Delete
-                  </button> </div>
-              </td>
-            </tr> <!-- Transaction 4 -->
-            <tr class="transaction-row">
-              <td>
-                <div class="transaction-description"> <strong>Electricity Bill</strong> <span>Home electricity</span>
-                </div>
-              </td>
-              <td> <span class="category-badge"> Bills </span> </td>
-              <td> <span class="type-badge expense-badge"> Expense </span> </td>
-              <td class="amount expense-amount"> -$85.00 </td>
-              <td> 12 Sep 2026 </td>
-              <td>
-                <div class="action-buttons"> <button type="button" class="btn btn-small btn-edit" data-action="edit">
-                    Edit </button> <button type="button" class="btn btn-small btn-delete" data-action="delete"> Delete
-                  </button> </div>
-              </td>
-            </tr> <!-- Transaction 5 -->
-            <tr class="transaction-row">
-              <td>
-                <div class="transaction-description"> <strong>New Headphones</strong> <span>Online purchase</span>
-                </div>
-              </td>
-              <td> <span class="category-badge"> Shopping </span> </td>
-              <td> <span class="type-badge expense-badge"> Expense </span> </td>
-              <td class="amount expense-amount"> -$150.00 </td>
-              <td> 08 Sep 2026 </td>
-              <td>
-                <div class="action-buttons"> <button type="button" class="btn btn-small btn-edit" data-action="edit">
-                    Edit </button> <button type="button" class="btn btn-small btn-delete" data-action="delete"> Delete
-                  </button> </div>
-              </td>
-            </tr>
+          <tbody id="transaction-list">
           </tbody>
         </table>
-      </div> <!-- Empty State -->
+      </div>
+
+      <!-- Empty State -->
+
       <div class="empty-state" id="empty-state" hidden>
         <div class="empty-state-icon"> $ </div>
         <h3>No transactions found</h3>
         <p> Add a transaction or change your filters to see your financial activity. </p>
       </div>
     </section>
-  </main> <!-- Footer -->
+  </main>
+
+  <!-- Footer -->
+
   <footer class="footer">
     <div class="container">
       <p> MoneyTrack &copy; 2026 </p>
     </div>
   </footer>
+
+  <script src="script.js"></script>
 </body>
 
 </html>
