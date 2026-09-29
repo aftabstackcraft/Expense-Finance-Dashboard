@@ -12,10 +12,13 @@ const searchTrans = document.getElementById("search-transaction");
 const filterType = document.getElementById("filter-type");
 const filterCategory = document.getElementById("filter-category");
 const filterDate = document.getElementById("filter-date");
+const transCount = document.getElementById("transaction-count");
+
 
 
 let transData = JSON.parse(localStorage.getItem("transData")) || [];
 addToTrans(transData);
+transCount.textContent = ` ${transData.length} transactions`;
 
 let mode = "add";
 let editingId = null;
@@ -35,6 +38,7 @@ function addTrans() {
         idForEditing.transdate = transDate.value;
 
         localStorage.setItem("transData", JSON.stringify(transData));
+        transCount.textContent = ` ${transData.length} transactions`;
 
         mode = "add";
         editingId = null;
@@ -63,6 +67,7 @@ function addTrans() {
 
         localStorage.setItem("transData", JSON.stringify(transData));
         addToTrans(transData);
+        transCount.textContent = ` ${transData.length} transactions`;
 
         transType.value = "";
         title.value = "";
@@ -120,6 +125,7 @@ function deleteTrans(elToDelete) {
 
     localStorage.setItem("transData", JSON.stringify(transData));
     addToTrans(transData);
+    transCount.textContent = ` ${transData.length} transactions`;
 
 }
 
