@@ -13,11 +13,16 @@ const filterType = document.getElementById("filter-type");
 const filterCategory = document.getElementById("filter-category");
 const filterDate = document.getElementById("filter-date");
 const transCount = document.getElementById("transaction-count");
-
+const balanceValue = document.getElementById("balance-value");
+const incomeValue = document.getElementById("income-value");
+const expenseValue = document.getElementById("expense-value");
+const monthValue = document.getElementById("month-value");
+const summaryNote = document.querySelector(".summary-note");
 
 
 let transData = JSON.parse(localStorage.getItem("transData")) || [];
 addToTrans(transData);
+dashboardStat()
 transCount.textContent = ` ${transData.length} transactions`;
 
 let mode = "add";
@@ -66,7 +71,6 @@ function addTrans() {
         })
 
         localStorage.setItem("transData", JSON.stringify(transData));
-        addToTrans(transData);
         transCount.textContent = ` ${transData.length} transactions`;
 
         transType.value = "";
@@ -127,6 +131,8 @@ function deleteTrans(elToDelete) {
     addToTrans(transData);
     transCount.textContent = ` ${transData.length} transactions`;
 
+    dashboardStat();
+
 }
 
 function editTrans(elToEdit) {
@@ -159,19 +165,61 @@ function searchAndSort() {
     const valueOfFilterDate = filterDate.value;
 
 
-    const filteredArray =  transData.filter((data) => data.title.toLowerCase().includes(valueOfSearchTrans.toLowerCase()) || data.description.toLowerCase().includes(valueOfSearchTrans.toLowerCase()));
+    const filteredArray = transData.filter((data) => data.title.toLowerCase().includes(valueOfSearchTrans.toLowerCase()) || data.description.toLowerCase().includes(valueOfSearchTrans.toLowerCase()));
 
     console.log(filteredArray)
 
-    const filteredType = valueOfFilterType !== "all" ? filteredArray.filter((data)=> data.transtype === valueOfFilterType) : filteredArray;
+    const filteredType = valueOfFilterType !== "all" ? filteredArray.filter((data) => data.transtype === valueOfFilterType) : filteredArray;
 
     console.log(filteredType)
-    const filteredCategory = valueOfFilterCategory !== "all" ? filteredType.filter((data)=> data.category === valueOfFilterCategory) : filteredType ;
+    const filteredCategory = valueOfFilterCategory !== "all" ? filteredType.filter((data) => data.category === valueOfFilterCategory) : filteredType;
 
-    const filteredDate = valueOfFilterDate !== "all" ? filteredCategory.filter((data)=> data.transdate.slice(0,7) === valueOfFilterDate) : filteredCategory ;
+    const filteredDate = valueOfFilterDate !== "all" ? filteredCategory.filter((data) => data.transdate.slice(0, 7) === valueOfFilterDate) : filteredCategory;
 
 
     addToTrans(filteredDate);
+
+}
+
+
+
+function dashboardStat() {
+
+    const incomeObj = transData.filter((data) => data.transtype === "income");
+    const expenseObj = transData.filter((data) => data.transtype === "expense");
+
+    let totalIncome = incomeObj.reduce((acc, data) => {
+        return Number(data.amount) + acc;
+    }, 0);
+    let totalExpense = expenseObj.reduce((acc, data) => {
+        return Number(data.amount) + acc;
+    }, 0);
+
+    let totalBalance = totalIncome - totalExpense;
+
+    if(totalIncome < totalExpense){
+        balanceValue.textContent = `-$${Math.abs(totalBalance)}`;
+        balanceValue.style.color = "red";
+    }
+    else{
+        balanceValue.textContent = `$${Math.abs(totalBalance)}`;
+        balanceValue.style.color = "blue";
+    }
+
+    incomeValue.textContent = `$${totalIncome}`;
+    expenseValue.textContent = `$${totalExpense}`;
+
+
+    const currentDate = new Date();
+    const currentMonth = currentDate.toLocaleString("default", {month: "long"});
+    const realTimeSpend = transData.filter((data)=> (Number(data.transdate.split("-")[1]) === currentDate.getMonth() + 1 && data.transtype === "expense"));
+
+    const monthTotalSpend = realTimeSpend.reduce((acc,data)=>{
+        return acc + Number(data.amount);
+    },0);
+
+    monthValue.textContent = `$${monthTotalSpend}`;
+    summaryNote.textContent = `${currentMonth} spending`;
 
 }
 
@@ -180,6 +228,7 @@ addTransBtn.addEventListener("click", (event) => {
     event.preventDefault();
     addTrans();
     addToTrans(transData);
+    dashboardStat();
 });
 
 transList.addEventListener("click", (event) => {
@@ -195,7 +244,7 @@ transList.addEventListener("click", (event) => {
 })
 
 
-searchTrans.addEventListener("input",searchAndSort);
-filterType.addEventListener("change",searchAndSort);
-filterCategory.addEventListener("change",searchAndSort);
-filterDate.addEventListener("change",searchAndSort);
+searchTrans.addEventListener("input", searchAndSort);
+filterType.addEventListener("change", searchAndSort);
+filterCategory.addEventListener("change", searchAndSort);
+filterDate.addEventListener("change", searchAndSort);

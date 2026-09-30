@@ -198,8 +198,16 @@ a {
   color: var(--color-income);
 }
 
+#income-value{
+  color: var(--color-income);
+}
+
 .expense-icon {
   background: var(--color-expense-bg);
+  color: var(--color-expense);
+}
+
+#expense-value{
   color: var(--color-expense);
 }
 
