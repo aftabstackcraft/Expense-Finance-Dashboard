@@ -343,7 +343,7 @@ a {
 }
 
 .chart-placeholder {
-  min-height: 300px;
+  min-height: 500px;
   display: grid;
   place-items: center;
   border: 2px dashed var(--color-border);
@@ -642,7 +642,7 @@ a {
   }
 
   .chart-placeholder {
-    min-height: 240px;
+    min-height: 300px;
   }
 
   /* The table keeps its minimum width. The .table-wrapper provides horizontal scrolling so transaction data remains usable on small screens. */

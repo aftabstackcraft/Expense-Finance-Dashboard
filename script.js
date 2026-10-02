@@ -17,13 +17,35 @@ const balanceValue = document.getElementById("balance-value");
 const incomeValue = document.getElementById("income-value");
 const expenseValue = document.getElementById("expense-value");
 const monthValue = document.getElementById("month-value");
-const summaryNote = document.querySelector(".summary-note");
-
+const summaryNote = document.getElementById("summary-notes");
+const overviewMonth = document.getElementById("overview-month");
+const expenseCharts = document.getElementById("expense-charts");
 
 let transData = JSON.parse(localStorage.getItem("transData")) || [];
+
+
+let chartToAdd = chartAdder();
+let dayToDisplay = chartToAdd.map((data) => data.day);
+let amountToDisplay = chartToAdd.map((data) => data.amount);
+
+let expertChart;
+expertChart = new Chart(expenseCharts, {
+    type: "bar",
+    
+    data: {
+        labels: dayToDisplay,
+        
+        datasets: [{
+            label: "Daily Expense",
+            data: amountToDisplay
+        }]
+    }
+});
+
 addToTrans(transData);
 dashboardStat()
 transCount.textContent = ` ${transData.length} transactions`;
+newCharts();
 
 let mode = "add";
 let editingId = null;
@@ -44,6 +66,7 @@ function addTrans() {
 
         localStorage.setItem("transData", JSON.stringify(transData));
         transCount.textContent = ` ${transData.length} transactions`;
+        newCharts();
 
         mode = "add";
         editingId = null;
@@ -72,6 +95,7 @@ function addTrans() {
 
         localStorage.setItem("transData", JSON.stringify(transData));
         transCount.textContent = ` ${transData.length} transactions`;
+        newCharts();
 
         transType.value = "";
         title.value = "";
@@ -132,6 +156,7 @@ function deleteTrans(elToDelete) {
     transCount.textContent = ` ${transData.length} transactions`;
 
     dashboardStat();
+    newCharts();
 
 }
 
@@ -141,8 +166,6 @@ function editTrans(elToEdit) {
     const idOfParent = parentEl.id;
 
     const idForEditing = transData.find(({ id }) => id === idOfParent);
-
-    console.log(idForEditing);
 
     transType.value = idForEditing.transtype;
     title.value = idForEditing.title;
@@ -181,8 +204,6 @@ function searchAndSort() {
 
 }
 
-
-
 function dashboardStat() {
 
     const incomeObj = transData.filter((data) => data.transtype === "income");
@@ -197,11 +218,11 @@ function dashboardStat() {
 
     let totalBalance = totalIncome - totalExpense;
 
-    if(totalIncome < totalExpense){
+    if (totalIncome < totalExpense) {
         balanceValue.textContent = `-$${Math.abs(totalBalance)}`;
         balanceValue.style.color = "red";
     }
-    else{
+    else {
         balanceValue.textContent = `$${Math.abs(totalBalance)}`;
         balanceValue.style.color = "blue";
     }
@@ -211,16 +232,59 @@ function dashboardStat() {
 
 
     const currentDate = new Date();
-    const currentMonth = currentDate.toLocaleString("default", {month: "long"});
-    const realTimeSpend = transData.filter((data)=> (Number(data.transdate.split("-")[1]) === currentDate.getMonth() + 1 && data.transtype === "expense"));
+    const currentMonth = getMonths(currentDate)
 
-    const monthTotalSpend = realTimeSpend.reduce((acc,data)=>{
+    const realTimeSpend = transData.filter((data) => (Number(data.transdate.split("-")[1]) === currentDate.getMonth() + 1 && data.transtype === "expense"));
+
+    const monthTotalSpend = realTimeSpend.reduce((acc, data) => {
         return acc + Number(data.amount);
-    },0);
+    }, 0);
 
     monthValue.textContent = `$${monthTotalSpend}`;
     summaryNote.textContent = `${currentMonth} spending`;
 
+}
+
+
+function chartAdder() {
+
+    const monthSelected = overviewMonth.value;
+
+    const filteredMonth = transData.filter(
+        (data) =>
+            getMonths(data.transdate) === monthSelected &&
+            data.transtype === "expense"
+    );
+
+    const objectForDate = [];
+
+    filteredMonth.forEach((data) => {
+
+        const currentDay = Number(data.transdate.split("-")[2]);
+        const currentAmount = Number(data.amount);
+
+        const existingDay = objectForDate.find(
+            (item) => item.day === currentDay
+        );
+
+        if (existingDay) {
+            existingDay.amount += currentAmount;
+        } else {
+            objectForDate.push({
+                day: currentDay,
+                amount: currentAmount,
+            });
+        }
+
+    });
+
+    return objectForDate;
+}
+
+function getMonths(date) {
+    const dates = new Date(date)
+    const month = dates.toLocaleString("default", { month: "long" });
+    return month;
 }
 
 
@@ -242,6 +306,20 @@ transList.addEventListener("click", (event) => {
         editTrans(event.target);
     }
 })
+
+function newCharts() {
+
+    chartToAdd = chartAdder();
+    dayToDisplay = chartToAdd.map((data) => data.day);
+    amountToDisplay = chartToAdd.map((data) => data.amount);
+
+    expertChart.data.labels = dayToDisplay;
+    expertChart.data.datasets[0].data = amountToDisplay;
+
+    expertChart.update();
+}
+
+overviewMonth.addEventListener("change", newCharts)
 
 
 searchTrans.addEventListener("input", searchAndSort);

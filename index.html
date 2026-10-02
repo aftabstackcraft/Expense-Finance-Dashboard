@@ -51,7 +51,7 @@
         <div class="summary-card-header"> <span class="summary-label">This Month</span> <span
             class="summary-icon month-icon">M</span> </div>
         <h2 class="summary-value" id="month-value"> $850.00 </h2>
-        <p class="summary-note">September spending</p>
+        <p class="summary-note" id="summary-notes">September spending</p>
       </div>
     </section> <!-- Main Dashboard Grid -->
     <div class="dashboard-grid"> <!-- Add Transaction -->
@@ -130,10 +130,11 @@
         <!-- Future Chart Placeholder -->
 
         <div class="chart-placeholder" id="expense-chart" aria-label="Expense chart placeholder">
-          <div class="chart-placeholder-content"> <span class="chart-icon">▥</span>
+          <!-- <div class="chart-placeholder-content"> <span class="chart-icon">▥</span>
             <h3>Expense Chart</h3>
             <p> Your JavaScript chart will appear here. </p>
-          </div>
+          </div> -->
+          <canvas id="expense-charts"></canvas>
         </div>
       </section>
     </div>
@@ -224,7 +225,7 @@
       <p> MoneyTrack &copy; 2026 </p>
     </div>
   </footer>
-
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="script.js"></script>
 </body>
 
